@@ -1,0 +1,13 @@
+[Unit]
+Description=otus uwsgi ip2w daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/uwsgi --ini /usr/local/etc/ip2w.ini
+Restart=always
+User=otus
+PIDFile=/var/run/otus_ip2w.pid
+
+[Install]
+WantedBy=multi-user.target
