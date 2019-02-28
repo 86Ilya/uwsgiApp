@@ -45,6 +45,7 @@ Git version: %{git_version} (branch: %{git_branch})
 %systemd_post %{name}.service
 adduser otus
 chgrp otus %{__logdir}
+chmod 774 %{__logdir}
 systemctl daemon-reload
 %preun
 %systemd_preun %{name}.service

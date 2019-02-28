@@ -1,4 +1,6 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+
 import logging
 import requests
 import json
@@ -7,7 +9,7 @@ import re
 
 DEFAULT_CONFIG = {
     'logging_level': logging.INFO,
-    'logfile': '/var/log/otus/otus_ip2w.log',
+    'logfile': None,
     'log_format': {'format': '[%(asctime)s] %(levelname).1s %(message)s', 'datefmt': '%Y.%m.%d %H:%M:%S'},
 }
 cfg_path = '/usr/local/etc/ip2w.conf'
@@ -21,17 +23,23 @@ response_headers_bad = [
     ('Content-Type', 'text/plain'),
     ('Content-Length', 0)
 ]
-pattern = re.compile(r'ip2w\/(?P<addr>\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3})')
+pattern = re.compile(r'^\/ip2w\/(?P<addr>\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3})')
 
 
 def application(environ, start_response):
+    """
+    Приложение определяющее погоду по IP адресу
+    :param dict environ: Переменные окружения в которых находится вся информация по запросу.
+    :param method start_response: Метод обработки ответа
+    :return:
+    """
     try:
         config = update_config(cfg_path, DEFAULT_CONFIG)
         ipinfo_token = config['ipinfo_token']
-        logging.basicConfig(logfile=config['logfile'], level=config['logging_level'],
+        logging.basicConfig(filename=config['logfile'], level=config['logging_level'],
                             format=config['log_format']['format'],
                             datefmt=config['log_format']['datefmt'])
-        ip = pattern.search(environ["REQUEST_URI"])
+        ip = pattern.match(environ["REQUEST_URI"])
         if ip:
             ip = ip.groupdict().get('addr')
         else:
@@ -77,6 +85,12 @@ def application(environ, start_response):
 
 
 def update_config(cfg_path, default_config):
+    """
+    Функция обновляет конфиг по умолчанию данными из файла конфига и возвращает новый конфиг.
+    :param string cfg_path: Путь к файлу конфига
+    :param dict default_config: Словарь конфига по умолчанию
+    :return dict:
+    """
     config = default_config.copy()
 
     if os.path.exists(cfg_path):
