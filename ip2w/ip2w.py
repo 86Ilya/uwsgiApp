@@ -67,11 +67,16 @@ def application(environ, start_response):
     weather = json.loads(weather_resp.content)
     response_dict = dict()
 
-    response_dict["city"] = weather['name']
-    response_dict["temp"] = "{:.2f}".format(weather['main']['temp'] + kelvin)
-    response_dict["conditions"] = weather['weather'][0]['main']
-    response_body = json.dumps(response_dict)
-    response_body = response_body.encode()
+    try:
+        response_dict["city"] = weather['name']
+        response_dict["temp"] = "{:.2f}".format(weather['main']['temp'] + kelvin)
+        response_dict["conditions"] = weather['weather'][0]['main']
+        response_body = json.dumps(response_dict)
+        response_body = response_body.encode()
+    except Exception as error:
+        logging.error("We have error while trying to parse weather response: {}".format(error))
+        start_response(status_bad, response_headers_bad)
+        return [None]
 
     # So the content-length is the sum of all string's lengths
     content_length = len(response_body)
