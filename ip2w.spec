@@ -22,7 +22,7 @@ Git version: %{git_version} (branch: %{git_branch})
 %define __etcdir    /usr/local/etc
 %define __logdir    /var/log/otus
 %define __bindir    /usr/local/ip2w/
-%define __systemddir    /usr/lib/systemd/system/
+%define __systemddir    /etc/systemd/system/
 %define __nginxconf /etc/nginx/default.d
 
 %prep
@@ -43,10 +43,7 @@ Git version: %{git_version} (branch: %{git_branch})
 
 %post
 %systemd_post %{name}.service
-adduser otus
-chgrp otus %{__logdir}
-chmod 774 %{__logdir}
-systemctl daemon-reload
+
 %preun
 %systemd_preun %{name}.service
 
