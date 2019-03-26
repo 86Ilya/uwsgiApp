@@ -63,7 +63,8 @@ def get_coordinates_by_ip(environ, config):
 
         ipinfo_token = config['ipinfo_token']
         logging.info("Getting info about ip: {}".format(ip))
-        ipaddr_resp = get(ipinfo_endpoint.format(ip, ipinfo_token))
+        ipaddr_resp = get(ipinfo_endpoint.format(ip, ipinfo_token),
+                          config['RECONNECT_ATTEMPTS'], config['TIMEOUT'])
         logging.debug("Info about IP: {}".format(ipaddr_resp))
         ipaddr_resp = json.loads(ipaddr_resp.content)
         lat, lon = ipaddr_resp["loc"].split(',')
@@ -84,7 +85,8 @@ def get_weather_info_by_coordinates(coord, config):
         lat, lon = coord
         logging.info("Getting info about weather.")
         weather_token = config['weather_token']
-        weather_resp = get(weather_endpoint.format(lat, lon, weather_token))
+        weather_resp = get(weather_endpoint.format(lat, lon, weather_token),
+                           config['RECONNECT_ATTEMPTS'], config['TIMEOUT'])
         logging.debug("Weather service response: {}".format(weather_resp))
     except Exception as error:
         logging.error("We have error while trying to get info about weather: {}".format(error))
