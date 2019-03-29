@@ -21,7 +21,7 @@ Git version: %{git_version} (branch: %{git_branch})
 
 %define __etcdir    /usr/local/etc
 %define __logdir    /var/log/otus
-%define __bindir    /usr/local/ip2w/
+%define __bindir    /usr/local/ip2w
 %define __systemddir    /etc/systemd/system/
 %define __nginxconf /etc/nginx/default.d
 
@@ -36,10 +36,10 @@ Git version: %{git_version} (branch: %{git_branch})
 %{__mkdir} -p %{buildroot}/%{__logdir}
 %{__mkdir} -p %{buildroot}/%{__bindir}
 %{__install} -pD -m 644  %{name}.service %{buildroot}/%{__systemddir}/%{name}.service
-%{__install} -pD -m 644  %{name}/%{name}.py %{__bindir}/%{name}.py
-%{__install} -pD -m 644  %{name}_proxy.conf %{__nginxconf}/%{name}_proxy.conf
-%{__install} -pD -m 644  %{name}.conf %{__etcdir}/%{name}.conf
-%{__install} -pD -m 644  %{name}.ini %{__etcdir}/%{name}.ini
+%{__install} -pD -m 644  %{name}/%{name}.py %{buildroot}/%{__bindir}/%{name}.py
+%{__install} -pD -m 644  %{name}_proxy.conf %{buildroot}/%{__nginxconf}/%{name}_proxy.conf
+%{__install} -pD -m 644  %{name}.conf %{buildroot}/%{__etcdir}/%{name}.conf
+%{__install} -pD -m 644  %{name}.ini %{buildroot}/%{__etcdir}/%{name}.ini
 
 %post
 %systemd_post %{name}.service
@@ -56,5 +56,10 @@ Git version: %{git_version} (branch: %{git_branch})
 
 %files
 %{__logdir}
-%{__bindir}
-%{__systemddir}
+%{__systemddir}/%{name}.service
+%{__bindir}/%{name}.py
+%{__bindir}/%{name}.pyc
+%{__bindir}/%{name}.pyo
+%{__nginxconf}/%{name}_proxy.conf
+%{__etcdir}/%{name}.conf
+%{__etcdir}/%{name}.ini

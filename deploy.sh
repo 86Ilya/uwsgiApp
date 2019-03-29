@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-docker build --tag ip2w_service:systemd .
+docker build --tag ip2w_service:systemd -f docker_deploy/Dockerfile .
 docker run \
   --detach \
   --name=ip2w-systemd \
